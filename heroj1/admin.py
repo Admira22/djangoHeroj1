@@ -1,8 +1,6 @@
 from django.contrib import admin
 
-from heroj1.models import Question
-from heroj1.models import Answers
 
+from heroj1.models import NewCK
 # Register your models here.
-admin.site.register(Question)
-admin.site.register(Answers)
+admin.site.register(NewCK)
