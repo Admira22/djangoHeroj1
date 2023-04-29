@@ -21,10 +21,3 @@ class NewCK(models.Model):
     text = models.CharField(max_length=2000)
     image = models.ImageField(upload_to='images/', max_length=255)
 
-
-class News(models.Model):
-    pub_date = models.DateTimeField("date publiched")
-    title = models.CharField(max_length=2000)
-    description = models.CharField(max_length=2000)
-    text = models.CharField(max_length=2000)
-    image = models.ImageField(upload_to='images/', height_field='height', width_field='width', max_length=255)
