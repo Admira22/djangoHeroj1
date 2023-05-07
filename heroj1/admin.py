@@ -7,6 +7,7 @@ from heroj1.models import KorisnikProgres
 from heroj1.models import Lekcija
 from heroj1.models import Pitanje
 from heroj1.models import Odgovor
+from heroj1.models import Blog
 
 # Register your models here.
 admin.site.register(NewCK)
@@ -15,3 +16,4 @@ admin.site.register(KorisnikProgres)
 admin.site.register(Lekcija)
 admin.site.register(Pitanje)
 admin.site.register(Odgovor)
+admin.site.register(Blog)

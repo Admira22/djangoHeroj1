@@ -61,7 +61,7 @@ class KorisnikProgres(models.Model):
 
 class Lekcija(models.Model):
     title = models.CharField(max_length=2000)
-    subtitle1 = models.CharField(max_length=2000)
+    subtitle1 = models.CharField(max_length=1000)
     part1 = models.CharField(max_length=2000)
     subtitle2 = models.CharField(max_length=2000)
     part2 = models.CharField(max_length=2000)
