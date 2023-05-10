@@ -21,4 +21,5 @@ urlpatterns = [
     path('',include("heroj1.urls")),
     path("korisnik/", include("heroj1.urls")),
     path('admin/', admin.site.urls),
+    path('lekcija/',admin.site.urls)
 ]

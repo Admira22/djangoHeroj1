@@ -14,7 +14,7 @@ class Answers(models.Model):
     choice_text = models.CharField(max_length=20)
     votes = models.IntegerField(default=0)
 
-class NewCK(models.Model):
+class Obavjest(models.Model):
     pub_date = models.DateTimeField("date published")
     title = models.CharField(max_length=2000)
     description = models.CharField(max_length=2000)
@@ -58,7 +58,6 @@ class KorisnikProgres(models.Model):
     korisnikID = models.ForeignKey(Korisnik, on_delete=models.CASCADE)
     progres = models.IntegerField(default=0)
 
-
 class Lekcija(models.Model):
     title = models.CharField(max_length=2000)
     subtitle1 = models.CharField(max_length=1000)
@@ -68,6 +67,7 @@ class Lekcija(models.Model):
     subtitle3 = models.CharField(max_length=2000)
     part3 = models.CharField(max_length=2000)
     video = models.CharField(max_length=2000)
+    image = models.ImageField(upload_to='images/', max_length=255)
 
 
 class Pitanje(models.Model):
@@ -86,6 +86,6 @@ class Blog(models.Model):
     part2 = models.CharField(max_length=2000)
     subtitle3 = models.CharField(max_length=2000)
     part3 = models.CharField(max_length=2000)
-    video = models.CharField(max_length=2000)
+    image = models.ImageField(upload_to='images/', max_length=255)
 
 
