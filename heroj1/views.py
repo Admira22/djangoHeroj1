@@ -106,3 +106,25 @@ def getListaPitanja(request):
 
     return JsonResponse(data, safe=False)
 
+@api_view(['GET'])
+def getListaLekcija(request):
+    list_of_lesson = Lekcija.objects.all()
+    res = serializers.serialize('json',list_of_lesson)
+
+    data=[]
+    for lesson in serializers.deserialize('json',res):
+        fields = lesson.object
+        data.append({
+            'id': fields.pk,
+            'title': fields.title,
+            'subtitle1': fields.subtitle1,
+            'part1': fields.part1,
+            'subtitle2': fields.subtitle2,
+            'part2': fields.part2,
+            'subtitle3': fields.subtitle3,
+            'part3': fields.part3,
+            'video': fields.video,
+            'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
+
+        })
+    return JsonResponse(data,safe=False)
