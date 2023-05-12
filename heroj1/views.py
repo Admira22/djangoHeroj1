@@ -2,7 +2,7 @@ from django.core import serializers
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
-from heroj1.models import Question, Obavjest, Lekcija
+from heroj1.models import Question, Obavjest, Lekcija, Blog
 
 
 def index(request):
@@ -103,6 +103,47 @@ def getListaPitanja(request):
             'questionText': fields.question_text,
             'pubDate': fields.pub_date
         })
-
     return JsonResponse(data, safe=False)
 
+@api_view(['GET'])
+def getBlogovi(request):
+     lista_blogova = Blog.objects.all()
+     rezultat = serializers.serialize('json',lista_blogova)
+
+     data = []
+     for blog in serializers.deserialize('json',rezultat):
+         fields = blog.object
+         data.append({
+             'id': fields.pk,
+             'title': fields.title,
+             'subtitle1': fields.subtitle1,
+             'part1': fields.part1,
+             'subtitle2': fields.subtitle2,
+             'part2': fields.part2,
+             'subtitle3': fields.subtitle3,
+             'part3': fields.part3,
+             'sadrzaj': fields.sadrzaj,
+             'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
+         })
+     return JsonResponse(data,safe=False)
+@api_view(['GET'])
+def getBlog(request,blog_id):
+    blog = Blog.objects.get(pk=blog_id)
+    rezultat = serializers.serialize('json', [blog, ])
+
+    data = []
+    for blog1 in serializers.deserialize('json', rezultat):
+         fields = blog1.object
+         data.append({
+             'id': fields.pk,
+             'title': fields.title,
+             'subtitle1': fields.subtitle1,
+             'part1': fields.part1,
+             'subtitle2': fields.subtitle2,
+             'part2': fields.part2,
+             'subtitle3': fields.subtitle3,
+             'part3': fields.part3,
+             'sadrzaj': fields.sadrzaj,
+             'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
+         })
+    return JsonResponse(data, safe=False)
