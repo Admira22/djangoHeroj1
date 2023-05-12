@@ -81,11 +81,12 @@ class Odgovor(models.Model):
 class Blog(models.Model):
     title = models.CharField(max_length=2000)
     subtitle1 = models.CharField(max_length=2000)
-    part1 = models.CharField(max_length=2000)
+    part1 = models.CharField(max_length=3500)
     subtitle2 = models.CharField(max_length=2000)
-    part2 = models.CharField(max_length=2000)
+    part2 = models.CharField(max_length=3500)
     subtitle3 = models.CharField(max_length=2000)
-    part3 = models.CharField(max_length=2000)
-    image = models.ImageField(upload_to='images/', max_length=255)
+    part3 = models.CharField(max_length=3500)
+    sadrzaj = models.CharField(max_length=3500)
+    image = models.ImageField(upload_to='Blog/', max_length=255)
 
 
