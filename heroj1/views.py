@@ -2,7 +2,7 @@ from django.core import serializers
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
-from heroj1.models import Question, Obavjest, Lekcija, Blog
+from heroj1.models import Question, Obavjest, Lekcija, Blog, Pitanje
 
 
 def index(request):
@@ -36,6 +36,29 @@ def getListaPitanja(request):
 def getLekcija(request,lekcija_id):
     lesson = Lekcija.objects.get(pk=lekcija_id)
     res = serializers.serialize('json',[lesson,])
+
+    data=[]
+    for lesson1 in serializers.deserialize('json',res):
+        fields = lesson1.object
+        data.append({
+            'id': fields.pk,
+            'title': fields.title,
+            'subtitle1': fields.subtitle1,
+            'part1': fields.part1,
+            'subtitle2': fields.subtitle2,
+            'part2': fields.part2,
+            'subtitle3': fields.subtitle3,
+            'part3': fields.part3,
+            'video': fields.video,
+            'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
+
+        })
+    return JsonResponse(data,safe=False)
+
+@api_view(['GET'])
+def getLekcije(request):
+    lesson = Lekcija.objects.all()
+    res = serializers.serialize('json',lesson)
 
     data=[]
     for lesson1 in serializers.deserialize('json',res):
@@ -146,4 +169,10 @@ def getBlog(request,blog_id):
              'sadrzaj': fields.sadrzaj,
              'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
          })
+    return JsonResponse(data, safe=False)
+
+@api_view(['GET'])
+def getPitanja(request, lekcijaID):
+    questions = Pitanje.objects.filter(lekcijaID_id=lekcijaID)
+    data = [{'id': q.pk, 'tekst': q.tekst} for q in questions]
     return JsonResponse(data, safe=False)
