@@ -17,15 +17,15 @@ def index(request):
         question_string += " " + question.__str__()
 
     return HttpResponse(question_string)
-def pitanje(request, question_id):
-    try:
-     question = Question.objects.get(pk=question_id)
-     return HttpResponse(question.__str__())
-    except Question.DoesNotExist:
-        return Http404("Pitanje ne postoji" + str(question_id))
-
-def odgovori(request, question_id):
-    return HttpResponse("Odgovori na pitanje" + str(question_id))
+# def pitanje(request, question_id):
+#     try:
+#      question = Question.objects.get(pk=question_id)
+#      return HttpResponse(question.__str__())
+#     except Question.DoesNotExist:
+#         return Http404("Pitanje ne postoji" + str(question_id))
+#
+# def odgovori(request, question_id):
+#     return HttpResponse("Odgovori na pitanje" + str(question_id))
 
 def ocjene(request, question_id):
     return HttpResponse("Ocjene za pitanje" + str(question_id))
