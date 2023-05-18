@@ -1,8 +1,13 @@
 from django.core import serializers
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
-from heroj1.models import Question, Obavjest, Lekcija, Blog, Pitanje
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from heroj1.models import Question, Obavjest, Lekcija, Blog, Pitanje, UserProfile
+from .serializers import ProfileSerializer
 
 
 def index(request):
@@ -176,3 +181,33 @@ def getPitanja(request, lekcijaID):
     questions = Pitanje.objects.filter(lekcijaID_id=lekcijaID)
     data = [{'id': q.pk, 'tekst': q.tekst} for q in questions]
     return JsonResponse(data, safe=False)
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        # ...
+
+        return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+@api_view(['GET'])
+def getRoutes(request):
+    routes = [
+        '/api/token',
+        '/api/token/refresh'
+    ]
+
+    return Response(routes)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getProfile(request):
+    user = request.user
+    profile = user.userprofile  # Assuming a one-to-one relationship between User and UserProfile
+    serializer = ProfileSerializer(profile)
+    return Response(serializer.data)

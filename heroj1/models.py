@@ -1,4 +1,6 @@
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import *
 
 
 class Question(models.Model):
@@ -89,4 +91,37 @@ class Blog(models.Model):
     sadrzaj = models.CharField(max_length=3500)
     image = models.ImageField(upload_to='Blog/', max_length=255)
 
+class UserProfile(models.Model):
+    user_fk = models.OneToOneField(User,on_delete=models.CASCADE)
+    STARIGRAD = "Stari grad"
+    CENTAR = "Centar"
+    NOVOSA = "Novo Sarajevo"
+    NOVIGRAD = "Novi grad"
+    ILIDZA = "Ilidža"
+    LOKALNE_ZAJEDNICE = [
+        (STARIGRAD, "Stari Grad"),
+        (CENTAR, "Centar"),
+        (NOVOSA, "Novo Sarajevo"),
+        (NOVIGRAD, "Novi Grad"),
+        (ILIDZA, "Ilidža"),
+    ]
+    IMADIJETE = 'Da'
+    NEMADIJETE = 'Ne'
+    DJECA = [
+        (IMADIJETE, "Yes"),
+        (NEMADIJETE, "No")
+    ]
+    firstName = models.CharField(max_length=2000,default='ime')
+    lastName = models.CharField(max_length=2000,default='prezime')
+    lc = models.CharField(
+        max_length=2000,
+        choices=LOKALNE_ZAJEDNICE,
+        default=STARIGRAD)
+    child = models.CharField(
+        max_length=10,
+        choices=DJECA,
+        default=NEMADIJETE
+    )
+    progres = models.IntegerField(default=0)
+    email = models.CharField(max_length=2000, default='email')
 
