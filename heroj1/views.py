@@ -101,22 +101,7 @@ def getObavjest(request):
         })
     return JsonResponse(data,safe=False)
 
-# def getNajnovijaObavjest(request):
-#     info = Obavjest.objects.all()
-#     res = serializers.serialize('json',info)
-#
-#     data = []
-#     for info1 in serializers.deserialize('json',res):
-#         fields = info1.object
-#         data.append({
-#             'id': fields.pk,
-#             'pub_date': fields.pub_date,
-#             'title': fields.title,
-#             'description': fields.description,
-#             'text': fields.text,
-#             'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
-#         })
-#     return JsonResponse(data,safe=False)
+
 
 @api_view(['GET'])
 def getListaPitanja(request):
