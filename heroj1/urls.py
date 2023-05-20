@@ -15,8 +15,8 @@ urlpatterns = [
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path("<int:question_id>/", views.pitanje, name="pitanje"),
-    path("<int:question_id>/odgovori/", views.odgovori, name="odgovori"),
-    path("<int:question_id>/odgovori/", views.ocjene, name="ocjene"),
+    #path("<int:question_id>/odgovori/", views.odgovori, name="odgovori"),
+    #path("<int:question_id>/odgovori/", views.ocjene, name="ocjene"),
     path("pitanja/",views.getListaPitanja,name="listaPitanja"),
     path('lekcija/<int:lekcija_id>/', views.getLekcija, name='jednaLekcija'),
     path('lekcije/',views.getLekcije, name='sveLekcije'),
@@ -25,7 +25,6 @@ urlpatterns = [
     path('blogovi/',views.getBlogovi, name='listaBlogova'),
     path('blogovi/<int:blog_id>',views.getBlog, name='blog'),
     path('profile/', views.getProfile,name='profile'),
-
-
+    path('odgovor/<int:pitanjeID>',views.getOdgovor,name="odgovorNaPitanje")
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

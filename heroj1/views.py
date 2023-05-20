@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from heroj1.models import Question, Obavjest, Lekcija, Blog, Pitanje, UserProfile
+from heroj1.models import Question, Obavjest, Lekcija, Blog, Pitanje, UserProfile,Odgovor
 from .serializers import ProfileSerializer
 
 
@@ -211,3 +211,8 @@ def getProfile(request):
     profile = user.userprofile  # Assuming a one-to-one relationship between User and UserProfile
     serializer = ProfileSerializer(profile)
     return Response(serializer.data)
+@api_view(['GET'])
+def getOdgovor(request,pitanjeID):
+    odgovor = Odgovor.objects.filter(pitanjeID_id=pitanjeID)
+    data = [{'id': o.pk, 'tekst': o.tekst} for o in odgovor]
+    return JsonResponse(data, safe=False)
