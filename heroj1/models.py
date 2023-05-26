@@ -1,8 +1,12 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import *
+from django.core.validators import FileExtensionValidator
 
-
+def validate_mp4(value):
+    if not value.name.endswith('.mp4'):
+        raise ValidationError("Unesite MP4 datoteku.")
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField("date published")
@@ -68,7 +72,10 @@ class Lekcija(models.Model):
     part2 = models.CharField(max_length=2000)
     subtitle3 = models.CharField(max_length=2000)
     part3 = models.CharField(max_length=2000)
-    video = models.CharField(max_length=2000)
+    video = models.FileField(
+        upload_to='videos/',
+        validators=[FileExtensionValidator(allowed_extensions=['mp4']), validate_mp4]
+    )
     image = models.ImageField(upload_to='images/', max_length=255)
 
 

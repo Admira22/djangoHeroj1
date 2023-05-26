@@ -54,7 +54,7 @@ def getLekcija(request,lekcija_id):
             'part2': fields.part2,
             'subtitle3': fields.subtitle3,
             'part3': fields.part3,
-            'video': fields.video,
+            'video': request.build_absolute_uri(fields.video.url) if fields.video else None,
             'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
 
         })
@@ -77,7 +77,7 @@ def getLekcije(request):
             'part2': fields.part2,
             'subtitle3': fields.subtitle3,
             'part3': fields.part3,
-            'video': fields.video,
+            'video': request.build_absolute_uri(fields.video.url) if fields.video else None,
             'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
 
         })
