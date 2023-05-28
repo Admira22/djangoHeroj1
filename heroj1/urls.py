@@ -25,6 +25,8 @@ urlpatterns = [
     path('blogovi/',views.getBlogovi, name='listaBlogova'),
     path('blogovi/<int:blog_id>',views.getBlog, name='blog'),
     path('profile/', views.getProfile,name='profile'),
-    path('odgovor/<int:pitanjeID>',views.getOdgovor,name="odgovorNaPitanje")
+    path('odgovor/<int:pitanjeID>',views.getOdgovor,name="odgovorNaPitanje"),
+    path('bolest/<int:firstaid_id>',views.getBolest,name="jednaBolest"),
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,6 +9,7 @@ from heroj1.models import Pitanje
 from heroj1.models import Odgovor
 from heroj1.models import Blog
 from heroj1.models import UserProfile
+from heroj1.models import FirstAid
 
 # Register your models here.
 admin.site.register(Obavjest)
@@ -19,3 +20,4 @@ admin.site.register(Pitanje)
 admin.site.register(Odgovor)
 admin.site.register(Blog)
 admin.site.register(UserProfile)
+admin.site.register(FirstAid)

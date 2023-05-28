@@ -131,4 +131,17 @@ class UserProfile(models.Model):
     )
     progres = models.IntegerField(default=0)
     email = models.CharField(max_length=2000, default='email')
+class FirstAid(models.Model):
+    maintitle = models.CharField(max_length=2000)
+    description = models.CharField(max_length=2000)
+    title = models.CharField(max_length=2000)
+    subtitle1 = models.CharField(max_length=1000)
+    part1 = models.CharField(max_length=2000)
+    subtitle2 = models.CharField(max_length=2000)
+    part2 = models.CharField(max_length=2000)
+    subtitle3 = models.CharField(max_length=2000)
+    part3 = models.CharField(max_length=2000)
+    subtitle4 = models.CharField(max_length=2000)
+    part4 = models.CharField(max_length=2000)
+    image = models.ImageField(upload_to='images/', max_length=255)
 

@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from heroj1.models import Question, Obavjest, Lekcija, Blog, Pitanje, UserProfile,Odgovor
+from heroj1.models import Question, Obavjest, Lekcija, Blog, Pitanje, UserProfile, Odgovor, FirstAid
 from .serializers import ProfileSerializer
 
 
@@ -216,3 +216,28 @@ def getOdgovor(request,pitanjeID):
     odgovor = Odgovor.objects.filter(pitanjeID_id=pitanjeID)
     data = [{'id': o.pk, 'tekst': o.tekst} for o in odgovor]
     return JsonResponse(data, safe=False)
+@api_view(['GET'])
+def getBolest(request,firstaid_id):
+    bolest = FirstAid.objects.get(pk=firstaid_id)
+    res = serializers.serialize('json',[bolest,])
+
+    data=[]
+    for bolest1 in serializers.deserialize('json',res):
+        fields = bolest1.object
+        data.append({
+            'id': fields.pk,
+            'maintitle': fields.maintitle,
+            'description': fields.description,
+            'title': fields.title,
+            'subtitle1': fields.subtitle1,
+            'part1': fields.part1,
+            'subtitle2': fields.subtitle2,
+            'part2': fields.part2,
+            'subtitle3': fields.subtitle3,
+            'part3': fields.part3,
+            'subtitle4': fields.subtitle4,
+            'part4': fields.part4,
+            'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
+
+        })
+    return JsonResponse(data,safe=False)
