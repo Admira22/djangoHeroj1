@@ -1,40 +1,16 @@
+from django.contrib.auth.models import User, AnonymousUser
 from django.core import serializers
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404
+from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from heroj1.models import Question, Obavjest, Lekcija, Blog, Pitanje, UserProfile, Odgovor, FirstAid
-from .serializers import ProfileSerializer
-
-
-def index(request):
-    list_of_question = Question.objects.all()
-    question_string = ""
-    for question in list_of_question:
-        question_string += " " + question.__str__()
-
-    return HttpResponse(question_string)
-def pitanje(request, question_id):
-    try:
-     question = Question.objects.get(pk=question_id)
-     return HttpResponse(question.__str__())
-    except Question.DoesNotExist:
-        return Http404("Pitanje ne postoji" + str(question_id))
-
-def odgovori(request, question_id):
-    return HttpResponse("Odgovori na pitanje" + str(question_id))
-
-def ocjene(request, question_id):
-    return HttpResponse("Ocjene za pitanje" + str(question_id))
-
-@api_view(['GET'])
-def getListaPitanja(request):
-    list_of_question = Question.objects.all()
-    res = serializers.serialize('json',list_of_question)
-    return HttpResponse(res,content_type="text/json-comment-filtered")
+from heroj1.models import Obavjest, Lekcija, Blog, Pitanje, UserProfile, Odgovor, FirstAid, KvizRezultati
+from .serializers import ProfileSerializer, FirstAidSerializer
 
 
 @api_view(['GET'])
@@ -100,39 +76,6 @@ def getObavjest(request):
             'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
         })
     return JsonResponse(data,safe=False)
-
-# def getNajnovijaObavjest(request):
-#     info = Obavjest.objects.all()
-#     res = serializers.serialize('json',info)
-#
-#     data = []
-#     for info1 in serializers.deserialize('json',res):
-#         fields = info1.object
-#         data.append({
-#             'id': fields.pk,
-#             'pub_date': fields.pub_date,
-#             'title': fields.title,
-#             'description': fields.description,
-#             'text': fields.text,
-#             'image': request.build_absolute_uri(fields.image.url) if fields.image else None,
-#         })
-#     return JsonResponse(data,safe=False)
-
-@api_view(['GET'])
-def getListaPitanja(request):
-    list_of_questions = Question.objects.all()
-    res = serializers.serialize('json', list_of_questions)
-
-    data = []
-    for question in serializers.deserialize('json', res):
-        fields = question.object
-        data.append({
-            'id': fields.pk,
-            'questionText': fields.question_text,
-            'pubDate': fields.pub_date
-        })
-    return JsonResponse(data, safe=False)
-
 @api_view(['GET'])
 def getBlogovi(request):
      lista_blogova = Blog.objects.all()
@@ -241,3 +184,104 @@ def getBolest(request,firstaid_id):
 
         })
     return JsonResponse(data,safe=False)
+@api_view(['GET'])
+def getListaOdgovora(request):
+    lista_odgovora = Odgovor.objects.all()
+    rezultat = serializers.serialize('json', lista_odgovora)
+
+    data = []
+    for odgovor in serializers.deserialize('json', rezultat):
+        fields = odgovor.object
+        pitanje = fields.pitanjeID
+        data.append({
+            'id': fields.pk,
+            'tekst':fields.tekst,
+            'pitanje':{
+                'id2':pitanje.pk
+            }
+        })
+    return JsonResponse(data, safe=False)
+@api_view(['GET'])
+def getLPitanja(request):
+    lista_pitanja = Pitanje.objects.all()
+    rezultat = serializers.serialize('json', lista_pitanja)
+
+    data = []
+    for pitanje in serializers.deserialize('json', rezultat):
+        fields = pitanje.object
+        data.append({
+            'id': fields.pk,
+            'tekst':fields.tekst,
+        })
+    return JsonResponse(data, safe=False)
+@api_view(['GET'])
+def getKvizRezultate(request):
+    lista_rezultata=KvizRezultati.objects.all()
+    rez=serializers.serialize('json',lista_rezultata)
+
+    data=[]
+    for rezultatic in serializers.deserialize('json',rez):
+        fields=rezultatic.object
+        data.append({
+            'user_id':fields.user_id,
+            'brojTacnih':fields.brojTacnih
+        })
+    return JsonResponse(data,safe=False)
+@api_view(['POST'])
+def posaljiRezultate(request):
+    data = request.data
+    brojTacnih = int(data.get('brojTacnih'))
+    print(brojTacnih)
+    user_id = int(data.get('user_id'))
+    user_profile = get_object_or_404(UserProfile, id=user_id)
+    KvizRezultati.objects.create(brojTacnih=brojTacnih, user_id=user_profile)
+    if brojTacnih == 7 or brojTacnih == 8:
+        return Response({'redirect': '/certifikat'})
+    else:
+        return Response({'redirect': '/Test'})
+@api_view(['POST'])
+def setProgres(request):
+    if isinstance(request.user, AnonymousUser):
+        return JsonResponse({'error': 'User not authenticated'})
+
+    user_profile = UserProfile.objects.get(user_fk=request.user)
+    user_profile.progres += 20
+    user_profile.save()
+
+    return JsonResponse({'success': True})
+
+class search(generics.ListCreateAPIView):
+    queryset = FirstAid.objects.all()
+    serializer_class = FirstAidSerializer
+    #filter_backends = [filters.SearchFilter]
+    filter_backends = [SearchFilter]
+    search_fields = ['^maintitle']
+
+
+@api_view(['POST'])
+def register(request):
+    data = request.data
+
+    user_data = {
+        'username': data.get('username'),
+        'password': data.get('password'),
+        'email': data.get('email')
+    }
+
+    profile_data = {
+        'firstName': data.get('firstName'),
+        'lastName': data.get('lastName'),
+        'email': data.get('email')
+    }
+
+    try:
+        # Create a new User instance
+        user = User.objects.create_user(**user_data)
+
+        # Create a new UserProfile instance and associate it with the User
+        profile = UserProfile.objects.create(user_fk=user, **profile_data)
+
+        # Return a success response
+        return Response({'success': 'User profile created successfully!'}, status=201)
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)

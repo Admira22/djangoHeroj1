@@ -7,18 +7,6 @@ from django.core.validators import FileExtensionValidator
 def validate_mp4(value):
     if not value.name.endswith('.mp4'):
         raise ValidationError("Unesite MP4 datoteku.")
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField("date published")
-
-    def __str__(self):
-        return str(self.id) + " " + self.question_text + "#"
-
-
-class Answers(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=20)
-    votes = models.IntegerField(default=0)
 
 class Obavjest(models.Model):
     pub_date = models.DateTimeField("date published")
@@ -26,44 +14,6 @@ class Obavjest(models.Model):
     description = models.CharField(max_length=2000)
     text = models.CharField(max_length=2000)
     image = models.ImageField(upload_to='images/', max_length=255)
-
-class Korisnik(models.Model):
-    STARIGRAD = "SG"
-    CENTAR = "CR"
-    NOVOSA = "NS"
-    NOVIGRAD = "NG"
-    ILIDZA = "IL"
-    LOKALNE_ZAJEDNICE = [
-        (STARIGRAD , "Stari Grad"),
-        (CENTAR, "Centar"),
-        (NOVOSA, "Novo Sarajevo"),
-        (NOVIGRAD, "Novi Grad"),
-        (ILIDZA, "Ilidža"),
-    ]
-    IMADIJETE = 'Ima'
-    NEMADIJETE = 'Nema'
-    DJECA = [
-        (IMADIJETE, "Da"),
-        (NEMADIJETE, "Ne" )
-    ]
-    firstName = models.CharField(max_length=2000)
-    lastName = models.CharField(max_length=2000)
-    email = models.CharField(max_length=2000)
-    password = models.CharField(max_length=2000)
-    lc = models.CharField(
-        max_length=10,
-        choices=LOKALNE_ZAJEDNICE,
-        default=STARIGRAD)
-    child = models.CharField(
-        max_length=10,
-        choices=DJECA,
-        default=NEMADIJETE
-    )
-
-class KorisnikProgres(models.Model):
-    korisnikID = models.ForeignKey(Korisnik, on_delete=models.CASCADE)
-    progres = models.IntegerField(default=0)
-
 class Lekcija(models.Model):
     title = models.CharField(max_length=2000)
     subtitle1 = models.CharField(max_length=1000)
@@ -77,7 +27,6 @@ class Lekcija(models.Model):
         validators=[FileExtensionValidator(allowed_extensions=['mp4']), validate_mp4]
     )
     image = models.ImageField(upload_to='images/', max_length=255)
-
 
 class Pitanje(models.Model):
     lekcijaID = models.ForeignKey(Lekcija, on_delete=models.CASCADE)
@@ -144,4 +93,7 @@ class FirstAid(models.Model):
     subtitle4 = models.CharField(max_length=2000)
     part4 = models.CharField(max_length=2000)
     image = models.ImageField(upload_to='images/', max_length=255)
+class KvizRezultati(models.Model):
+    user_id=models.ForeignKey(UserProfile,on_delete=models.CASCADE)
+    brojTacnih=models.IntegerField(default=0)
 
